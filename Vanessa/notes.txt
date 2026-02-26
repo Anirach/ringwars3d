@@ -1,0 +1,11 @@
+Opponent's strategy: UNKNOWN,UNKNOWN
+Opponent's attacks total: 0
+Opponent's attacks last round: 0
+Visibility range: 0
+My attacks last round: 
+Blocked attacks total: 0.0
+Blocked attacks last round: 0.0
+Attack buffer: 1.0
+Used strategies (Expansion, Consolidation, AttackMax, AttackMin, Defensive): 0.0,0.0,0.0,0.0,0.0
+Abandoned nodes: 
+Initial analysis concluded: false
