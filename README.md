@@ -156,17 +156,17 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-    A["Browser\nPOST /execute-agent"] --> B["Write\nstepNum.step"]
-    B --> C{File\nextension?}
-    C -->|.jar| D["java -jar\nagent.jar"]
-    C -->|.py|  E["python3\nagent.py"]
-    C -->|.js|  F["node\nagent.js"]
-    D & E & F --> G["Agent reads\n.step file"]
-    G --> H["Agent writes\nplayer.move file"]
-    H --> I{Valid\nmoves?}
-    I -->|Yes| J["Return moves[]\nto game logic"]
-    I -->|No / timeout| K["Return []\nempty — skip turn"]
-    J & K --> L["Resolve\nbattles"]
+    A[Browser] --> B[Write .step]
+    B --> C{Extension?}
+    C -->|.jar| D[java -jar]
+    C -->|.py| E[python3]
+    C -->|.js| F[node]
+    D & E & F --> G[Read .step]
+    G --> H[Write .move]
+    H --> I{Valid?}
+    I -->|Yes| J[Return moves]
+    I -->|No| K[Skip turn]
+    J & K --> L[Resolve battles]
 ```
 
 ---
