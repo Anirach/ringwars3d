@@ -216,9 +216,13 @@ Each line = `nodeIndex,amount` — place `amount` Fernies on node `nodeIndex`.
 
 ---
 
-### Python Agent Starter Template
+### Agent Starter Templates
+
+<details>
+<summary><b>Python Template</b></summary>
 
 ```python
+#!/usr/bin/env python3
 import sys
 
 def parse_step(step_num):
@@ -230,33 +234,107 @@ def parse_step(step_num):
     max_cap  = int(lines[3])           # Current node cap
     return fernies, owners, new_f, max_cap
 
-def compute_moves(fernies, owners, new_f, ring_size=20):
+def compute_moves(fernies, owners, new_f):
     moves = []
-    remaining = new_f
-
-    # Example: place on your own nodes (balanced distribution)
     my_nodes = [i for i, o in enumerate(owners) if o == 'Y']
     if not my_nodes:
         return moves
-
-    per_node = remaining // len(my_nodes)
+    per_node = new_f // len(my_nodes)
     for node in my_nodes:
-        if per_node <= 0:
-            break
-        moves.append(f"{node},{per_node}")
-        remaining -= per_node
-
+        if per_node > 0:
+            moves.append(f"{node},{per_node}")
     return moves
 
 step_num = sys.argv[1]
-player   = sys.argv[2]
-
+player = sys.argv[2]
 fernies, owners, new_f, max_cap = parse_step(step_num)
 moves = compute_moves(fernies, owners, new_f)
 
 with open(f"{player}.move", 'w') as f:
     f.write('\n'.join(moves))
 ```
+
+</details>
+
+<details>
+<summary><b>Node.js Template</b></summary>
+
+```javascript
+#!/usr/bin/env node
+const fs = require('fs');
+
+const stepNum = process.argv[2];
+const player = process.argv[3];
+
+// Parse step file
+const content = fs.readFileSync(`${stepNum}.step`, 'utf-8');
+const lines = content.trim().split('\n');
+const fernies = lines[0].split(',').map(Number);
+const owners = lines[1].split(',');        // Y / N / U / H
+const newFernies = parseInt(lines[2], 10); // Available to place
+const maxCap = parseInt(lines[3], 10);     // Current max per node
+
+// Strategy: distribute evenly across owned nodes
+const myNodes = owners.map((o, i) => o === 'Y' ? i : -1).filter(i => i >= 0);
+const moves = [];
+if (myNodes.length > 0) {
+    const perNode = Math.floor(newFernies / myNodes.length);
+    for (const node of myNodes) {
+        if (perNode > 0) moves.push(`${node},${perNode}`);
+    }
+}
+
+// Write move file
+fs.writeFileSync(`${player}.move`, moves.join('\n'));
+```
+
+</details>
+
+<details>
+<summary><b>Java Template</b></summary>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Agent {
+    public static void main(String[] args) throws IOException {
+        String stepNum = args[0];
+        String player = args[1];
+
+        // Parse step file
+        BufferedReader reader = new BufferedReader(new FileReader(stepNum + ".step"));
+        int[] fernies = Arrays.stream(reader.readLine().split(",")).mapToInt(Integer::parseInt).toArray();
+        String[] owners = reader.readLine().split(",");  // Y / N / U / H
+        int newFernies = Integer.parseInt(reader.readLine());
+        int maxCap = Integer.parseInt(reader.readLine());
+        reader.close();
+
+        // Strategy: distribute evenly across owned nodes
+        List<Integer> myNodes = new ArrayList<>();
+        for (int i = 0; i < owners.length; i++) {
+            if (owners[i].equals("Y")) myNodes.add(i);
+        }
+
+        List<String> moves = new ArrayList<>();
+        if (!myNodes.isEmpty()) {
+            int perNode = newFernies / myNodes.size();
+            for (int node : myNodes) {
+                if (perNode > 0) moves.add(node + "," + perNode);
+            }
+        }
+
+        // Write move file
+        PrintWriter writer = new PrintWriter(player + ".move");
+        for (String move : moves) writer.println(move);
+        writer.close();
+    }
+}
+```
+
+> Compile: `javac Agent.java` → Package: `jar cfe agent.jar Agent Agent.class`
+
+</details>
 
 ---
 
